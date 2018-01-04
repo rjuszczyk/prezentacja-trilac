@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pl.pharmaway.prezentacjatrilac.view.FixedScaledLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:fixedWidth="1280dp"
+    app:fixedHeight="800dp"
+    >
+
+    <pl.pharmaway.prezentacjatrilac.view.FixedImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:imageReference="@drawable/logo"
+        android:layout_gravity="left|top"
+        android:layout_margin="@dimen/logo_margin"
+        />
+
+    <pl.pharmaway.prezentacjatrilac.view.FixedImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:imageReference="@drawable/packshot"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="40dp"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="70dp"
+        >
+        <pl.pharmaway.prezentacjatrilac.view.FixedImageView
+            android:id="@+id/skutecznosc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:imageReference="@drawable/skutecznosc"
+            />
+        <pl.pharmaway.prezentacjatrilac.view.FixedImageView
+            android:id="@+id/optymalna_kolonizacja"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:imageReference="@drawable/optymalna_kolonizacja"
+            />
+        <pl.pharmaway.prezentacjatrilac.view.FixedImageView
+            android:id="@+id/bezpieczenstwo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:imageReference="@drawable/bezpieczenstwo"
+            />
+    </LinearLayout>
+
+    <include
+        layout="@layout/footer" />
+</pl.pharmaway.prezentacjatrilac.view.FixedScaledLayout>
