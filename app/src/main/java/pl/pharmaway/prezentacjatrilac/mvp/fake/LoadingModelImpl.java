@@ -1,77 +1,117 @@
 package pl.pharmaway.prezentacjatrilac.mvp.fake;
 
-import android.os.Handler;
+import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 
+import java.util.List;
+
+import pl.pharmaway.prezentacjatrilac.database.DataRow;
 import pl.pharmaway.prezentacjatrilac.mvp.Cancelable;
 import pl.pharmaway.prezentacjatrilac.mvp.LoadingModel;
+import pl.pharmaway.prezentacjatrilac.network.DataVersion;
+import pl.pharmaway.prezentacjatrilac.network.GetDataResponse;
+import pl.pharmaway.prezentacjatrilac.network.PrezentacjaApi;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class LoadingModelImpl implements LoadingModel {
+
+    private final SQLiteDatabase database;
+    private final PrezentacjaApi prezentacjaApi;
+    private final SharedPreferences sharedPreferences;
+
+    public LoadingModelImpl(
+            SQLiteDatabase database,
+            PrezentacjaApi prezentacjaApi,
+            SharedPreferences sharedPreferences
+    ) {
+        this.database = database;
+        this.prezentacjaApi = prezentacjaApi;
+        this.sharedPreferences = sharedPreferences;
+    }
+
     @Override
     public Cancelable checkUpdate(final CheckUpdateCallback checkUpdateCallback) {
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
+        final Call<DataVersion> call = prezentacjaApi.getDataVersion();
+        final Cancelable cancelable = new Cancelable() {
+            boolean isCanceled = false;
             @Override
-            public void run() {
-                checkUpdateCallback.onLoaded(true);
+            public boolean isCanceled() {
+                return isCanceled;
+            }
+
+            @Override
+            public void cancel() {
+                isCanceled = true;
+                call.cancel();
             }
         };
-        handler.postDelayed(runnable, 2000);
 
-        SimpleCancelable simpleCancelable = new SimpleCancelable(new Runnable() {
+        call.enqueue(new Callback<DataVersion>() {
+
+            @SuppressLint("ApplySharedPref")
             @Override
-            public void run() {
-                handler.removeCallbacks(runnable);
+            public void onResponse(Response<DataVersion> response) {
+                if (!cancelable.isCanceled()) {
+                    int version = sharedPreferences.getInt("version", 0);
+                    int newVersion = response.body().getVersion();
+                    sharedPreferences.edit().putInt("version", newVersion).commit();
+                    checkUpdateCallback.onLoaded(newVersion >version);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                checkUpdateCallback.onFailed();
             }
         });
 
-        return simpleCancelable;
+        return cancelable;
     }
 
     @Override
     public Cancelable downloadDatabase(final DownloadDatabaseCallback downloadDatabaseCallback) {
-        final SimpleCancelable simpleCancelable = new SimpleCancelable(new Runnable() {
+        final Call<GetDataResponse> call = prezentacjaApi.getData();
+        final Cancelable cancelable = new Cancelable() {
+            boolean isCanceled = false;
             @Override
-            public void run() {
-
-            }
-        });
-        final Handler handler = new Handler();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (double i = 0; i < 1; i+=0.1) {
-                    if(simpleCancelable.isCanceled()) return;
-                    final double finalI = i;
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            downloadDatabaseCallback.onProgress(finalI);
-                        }
-                    });
-                    sleep(1000);
-                }
-
-                sleep(3000);
-                if(simpleCancelable.isCanceled()) return;
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        downloadDatabaseCallback.onDownloaded();
-                    }
-                });
+            public boolean isCanceled() {
+                return isCanceled;
             }
 
-            void sleep(long millis) {
-                try {
-                    Thread.sleep(millis);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            @Override
+            public void cancel() {
+                isCanceled = true;
+                call.cancel();
+            }
+        };
+
+        call.enqueue(new Callback<GetDataResponse>() {
+            @Override
+            public void onResponse(Response<GetDataResponse> response) {
+                database.beginTransaction();
+                List<DataRow> pharmacyDataList = response.body().getDataList();
+                cupboard().withDatabase(database).delete(DataRow.class, "1");
+                cupboard().withDatabase(database).put(pharmacyDataList);
+                if (!cancelable.isCanceled()) {
+                    database.setTransactionSuccessful();
                 }
+                database.endTransaction();
+                if (!cancelable.isCanceled()) {
+                    downloadDatabaseCallback.onDownloaded();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                downloadDatabaseCallback.onFailed();
             }
         });
 
-        thread.start();
-
-        return simpleCancelable;
+        return cancelable;
     }
 }

@@ -47,8 +47,7 @@ public class Page6 extends FooterActivity {
 
     @Override
     protected Class<?> getNextActivity() {
-        return Page1.class;
-        //todo: niech przechodzi do wysylania
+        return FormActivity.class;
     }
 
     interface AnimationOpeartor {

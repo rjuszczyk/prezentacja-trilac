@@ -6,6 +6,7 @@ public class DrawableDimensionGenerated {
     public static int[] getDimensionForImageReosurce(int image) {
         switch (image) {
             case R.drawable.bezpieczenstwo: return new int[]{ 611, 171};
+            case R.drawable.form: return new int[]{ 1920, 1200};
             case R.drawable.footer: return new int[]{ 667, 60};
             case R.drawable.jelito: return new int[]{ 436, 492};
             case R.drawable.jelito1: return new int[]{ 261, 300};
