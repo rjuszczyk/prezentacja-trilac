@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -20,11 +19,7 @@ import pl.pharmaway.prezentacjatrilac.network.PrezentacjaApi;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
-import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
-import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-
-public class LoadingActivity extends AppCompatActivity implements LoadingView{
+public class LoadingActivity extends FooterActivity implements LoadingView {
 
     LoadingPresenter loadingPresenter;
     private TextView progressMsg;
@@ -33,14 +28,12 @@ public class LoadingActivity extends AppCompatActivity implements LoadingView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().getDecorView().setSystemUiVisibility(
-                SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                        SYSTEM_UI_FLAG_FULLSCREEN |
-                        SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-        setContentView(R.layout.page0);
-
         progressMsg = findViewById(R.id.progressMsg);
+
+        FirstChoice firstChoice = new FirstChoice(getSharedPreferences("appPrefs", Context.MODE_PRIVATE));
+        firstChoice.reset();
+        TimeSpendInApp timeSpendInApp = new TimeSpendInApp(getSharedPreferences("appPrefs", Context.MODE_PRIVATE));
+        timeSpendInApp.reset();
 
         SharedPreferences sharedPreferences = getSharedPreferences("appPrefs", Context.MODE_PRIVATE);
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
@@ -54,10 +47,20 @@ public class LoadingActivity extends AppCompatActivity implements LoadingView{
         loadingPresenter = new LoadingPresenter(
                 new LoadingModelImpl(database, prezentacjaApi, sharedPreferences),
                 this,
-                new SendFormImpl(),
-                new FormDataRepositoryImpl()
+                new SendFormImpl(prezentacjaApi),
+                new FormDataRepositoryImpl(this, database)
         );
         loadingPresenter.start();
+    }
+
+    @Override
+    protected int getLayoutResourceId() {
+        return R.layout.page0;
+    }
+
+    @Override
+    protected Class<?> getNextActivity() {
+        return null;
     }
 
     @Override

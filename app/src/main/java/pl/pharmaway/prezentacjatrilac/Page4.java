@@ -6,6 +6,14 @@ import android.view.ViewPropertyAnimator;
 
 public class Page4 extends FooterActivity {
 
+    protected long getDelay() {
+        return 500;
+    }
+
+    protected long getDuration() {
+        return 1000;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -14,17 +22,19 @@ public class Page4 extends FooterActivity {
         View page4_2 = findViewById(R.id.page4_2);
         View page4_3 = findViewById(R.id.page4_3);
         View page4_4 = findViewById(R.id.page4_4);
+        View page4_42 = findViewById(R.id.page4_42);
+        View page4_43 = findViewById(R.id.page4_43);
 
         if(savedInstanceState == null) {
-            setInvisible(page4_1, page4_2, page4_3, page4_4);
+            setInvisible(page4_1, page4_2, page4_3, page4_4, page4_42, page4_43);
             animateIn(500, new Page6.AnimationOpeartor() {
                 @Override
                 public ViewPropertyAnimator apply(ViewPropertyAnimator animator) {
                     return animator.alpha(1);
                 }
-            }, page4_1, page4_2, page4_3, page4_4);
+            }, page4_1, page4_2, page4_3, page4_4, page4_42, page4_43);
         } else {
-            setVisible(page4_1, page4_2, page4_3, page4_4);
+            setVisible(page4_1, page4_2, page4_3, page4_4, page4_42, page4_43);
         }
     }
 

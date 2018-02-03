@@ -36,6 +36,8 @@ public class DrawableDimensionGenerated {
             case R.drawable.packshot: return new int[]{ 545, 412};
             case R.drawable.packshot_with_bg: return new int[]{ 877, 489};
             case R.drawable.page4_table: return new int[]{ 606, 302};
+            case R.drawable.page4_table2: return new int[]{ 606, 302};
+            case R.drawable.page4_table3: return new int[]{ 606, 302};
             case R.drawable.skutecznosc: return new int[]{ 611, 171};
             default: return new int[]{0,0};
         }

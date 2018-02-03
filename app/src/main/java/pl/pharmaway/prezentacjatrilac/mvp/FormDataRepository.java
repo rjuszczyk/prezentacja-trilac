@@ -2,9 +2,11 @@ package pl.pharmaway.prezentacjatrilac.mvp;
 
 import java.util.List;
 
+import pl.pharmaway.prezentacjatrilac.database.NotSendDataRow;
+
 public interface FormDataRepository {
-    List<Form> getNotSendForms();
-    void markAsSend(Form form);
+    List<NotSendDataRow> getNotSendForms();
+    void markAsSend(NotSendDataRow form);
     boolean hasNotSendForms();
-    void storeNotSendForm(Form form);
+    void storeNotSendForm(NotSendDataRow form);
 }

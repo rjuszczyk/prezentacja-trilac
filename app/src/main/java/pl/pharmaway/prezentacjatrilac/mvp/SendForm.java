@@ -1,7 +1,9 @@
 package pl.pharmaway.prezentacjatrilac.mvp;
 
+import pl.pharmaway.prezentacjatrilac.database.NotSendDataRow;
+
 public interface SendForm {
-    Cancelable sendForm(Form form, Callback callback);
+    Cancelable sendForm(NotSendDataRow form, Callback callback);
 
     interface Callback {
         void onSuccess();

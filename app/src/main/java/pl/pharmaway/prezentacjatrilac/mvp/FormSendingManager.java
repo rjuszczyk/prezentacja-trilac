@@ -3,6 +3,8 @@ package pl.pharmaway.prezentacjatrilac.mvp;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.pharmaway.prezentacjatrilac.database.NotSendDataRow;
+
 public class FormSendingManager {
     private final FormDataRepository formDataRepository;
     private final SendForm sendForm;
@@ -14,18 +16,18 @@ public class FormSendingManager {
 
     public Cancelable performSending(SendingCallback sendingCallback) {
         SendingCancleable cancleable = new SendingCancleable();
-        List<Form> formList = formDataRepository.getNotSendForms();
+        List<NotSendDataRow> formList = formDataRepository.getNotSendForms();
         sendNext(cancleable, formList, sendingCallback);
 
         return cancleable;
     }
 
-    private void sendNext(final SendingCancleable cancleable, final List<Form> formList, final SendingCallback sendingCallback) {
+    private void sendNext(final SendingCancleable cancleable, final List<NotSendDataRow> formList, final SendingCallback sendingCallback) {
         sendingCallback.onProgress(formList.size());
         cancleable.addCancelable(sendForm.sendForm(formList.get(0), new SendForm.Callback() {
             @Override
             public void onSuccess() {
-                Form form = formList.remove(0);
+                NotSendDataRow form = formList.remove(0);
                 formDataRepository.markAsSend(form);
                 if(formList.isEmpty()) {
                     sendingCallback.onSuccess();

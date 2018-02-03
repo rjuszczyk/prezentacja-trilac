@@ -57,6 +57,24 @@
         android:layout_marginLeft="630dp"
         />
 
+    <pl.pharmaway.prezentacjatrilac.view.FixedImageView
+        android:id="@+id/page4_42"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:imageReference="@drawable/page4_table2"
+        android:layout_marginTop="247dp"
+        android:layout_marginLeft="630dp"
+        />
+
+    <pl.pharmaway.prezentacjatrilac.view.FixedImageView
+        android:id="@+id/page4_43"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:imageReference="@drawable/page4_table3"
+        android:layout_marginTop="247dp"
+        android:layout_marginLeft="630dp"
+        />
+
 
     <pl.pharmaway.prezentacjatrilac.view.FixedImageView
         android:layout_width="wrap_content"

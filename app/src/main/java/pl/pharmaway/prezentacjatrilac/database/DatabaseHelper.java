@@ -1,6 +1,7 @@
 package pl.pharmaway.prezentacjatrilac.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -71,5 +72,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         new String[]{String.valueOf(lekarzType), lekarz})
                 .groupBy("lekarz")
                 .list();
+    }
+
+    public static List<NotSendDataRow> getNotSendDataRows(
+            Context context) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        return cupboard()
+                .withDatabase(db)
+                .query(NotSendDataRow.class)
+                .list();
+    }
+
+    public static int getNotSendCount(Context context) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        Cursor cursor = cupboard()
+                .withDatabase(db)
+                .query(NotSendDataRow.class)
+                .getCursor();
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 }

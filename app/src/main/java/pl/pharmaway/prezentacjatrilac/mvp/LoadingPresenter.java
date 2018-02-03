@@ -34,33 +34,11 @@ public class LoadingPresenter {
 
                         @Override
                         public void onDownloaded() {
-                            if (!formDataRepository.hasNotSendForms()) {
-                                loadingView.goToNext();
-                            } else {
-                                loadingView.showLoading("Wysyłam zaległe ankiety");
-                                cancelable = formSendingManager.performSending(new FormSendingManager.SendingCallback() {
-                                    @Override
-                                    public void onProgress(int left) {
-                                        loadingView.showLoading("Wysyłam zaległe ankiety (zostało " + left + ")");
-                                    }
-
-                                    @Override
-                                    public void onSuccess() {
-                                        loadingView.showLoading("Wysłano zaległe ankiety");
-                                        loadingView.goToNext();
-                                    }
-
-                                    @Override
-                                    public void onFailed() {
-                                        loadingView.showLoading("Błąd wysyłania");
-                                        loadingView.goToNext();
-                                    }
-                                });
-                            }
+                            sendNotSended();
                         }
                     });
                 } else {
-                    loadingView.goToNext();
+                    sendNotSended();
                 }
             }
 
@@ -69,6 +47,32 @@ public class LoadingPresenter {
                 loadingView.goToNext();
             }
         });
+    }
+
+    private void sendNotSended() {
+        if (!formDataRepository.hasNotSendForms()) {
+            loadingView.goToNext();
+        } else {
+            loadingView.showLoading("Wysyłam zaległe ankiety");
+            cancelable = formSendingManager.performSending(new FormSendingManager.SendingCallback() {
+                @Override
+                public void onProgress(int left) {
+                    loadingView.showLoading("Wysyłam zaległe ankiety (zostało " + left + ")");
+                }
+
+                @Override
+                public void onSuccess() {
+                    loadingView.showLoading("Wysłano zaległe ankiety");
+                    loadingView.goToNext();
+                }
+
+                @Override
+                public void onFailed() {
+                    loadingView.showLoading("Błąd wysyłania");
+                    loadingView.goToNext();
+                }
+            });
+        }
     }
 
     public void stop() {

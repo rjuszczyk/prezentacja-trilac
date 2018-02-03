@@ -1,5 +1,6 @@
 package pl.pharmaway.prezentacjatrilac;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -14,10 +15,13 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 public abstract class FooterActivity extends AppCompatActivity {
     @Nullable private View buttonNext;
     @Nullable private View buttonPrev;
-
+    TimeSpendInApp timeSpendInApp;
+    long startTime;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        timeSpendInApp = new TimeSpendInApp(getSharedPreferences("appPrefs", Context.MODE_PRIVATE));
 
         getWindow().getDecorView().setSystemUiVisibility(
                 SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
@@ -45,6 +49,19 @@ public abstract class FooterActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startTime = System.currentTimeMillis();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        long delta = System.currentTimeMillis() - startTime;
+        timeSpendInApp.addTime(delta);
     }
 
     protected void onNextClicked() {
