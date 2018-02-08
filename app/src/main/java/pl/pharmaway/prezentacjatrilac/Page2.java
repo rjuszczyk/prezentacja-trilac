@@ -62,6 +62,7 @@ public class Page2 extends FooterActivity {
 
     private void startActivity(Class<?> activityClass) {
         Intent intent = new Intent(this, activityClass);
+        intent.putExtra("goToSummary", true);
         startActivity(intent);
     }
 

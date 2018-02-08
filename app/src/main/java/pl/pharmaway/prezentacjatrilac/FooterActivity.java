@@ -17,10 +17,11 @@ public abstract class FooterActivity extends AppCompatActivity {
     @Nullable private View buttonPrev;
     TimeSpendInApp timeSpendInApp;
     long startTime;
+    boolean goToSummary;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        goToSummary = getIntent().getBooleanExtra("goToSummary", false);
         timeSpendInApp = new TimeSpendInApp(getSharedPreferences("appPrefs", Context.MODE_PRIVATE));
 
         getWindow().getDecorView().setSystemUiVisibility(
@@ -65,7 +66,12 @@ public abstract class FooterActivity extends AppCompatActivity {
     }
 
     protected void onNextClicked() {
-        Intent intent = new Intent(this, getNextActivity());
+        Intent intent;
+        if(!goToSummary) {
+            intent = new Intent(this, getNextActivity());
+        } else {
+            intent = new Intent(this, Page6.class);
+        }
         startActivity(intent);
     }
 
