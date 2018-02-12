@@ -71,6 +71,7 @@ public abstract class FooterActivity extends AppCompatActivity {
             intent = new Intent(this, getNextActivity());
         } else {
             intent = new Intent(this, Page6.class);
+            intent.putExtra("goBackToMenu", true);
         }
         startActivity(intent);
     }
