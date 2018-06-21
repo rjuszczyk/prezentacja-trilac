@@ -89,8 +89,9 @@ public abstract class FooterActivity extends AppCompatActivity {
     }
 
     protected void animateIn(long initialDelay, Page6.AnimationOpeartor animationOpeartor, View... paragraphs) {
-        long delay = getDelay();
-        long duration = getDuration();
+        initialDelay = 0;
+        long delay = 0;//getDelay();
+        long duration = 0;//getDuration();
 
         for (int i = 0; i < paragraphs.length; i++) {
             View paragraph = paragraphs[i];
